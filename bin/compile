@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Heroku buildpack for Meteor
+# RJV - 10.28.16 - Meteor buildpack for Bluemix which support Meteor v1.3+
 #
 
 # fail fast.
@@ -23,7 +23,16 @@ export_env_dir() {
   fi
 }
 
+extract_root_url() {
+  #echo "Pulling ROOT_URL from VCAP_APPLICATION"
+  DOMAIN=`echo $VCAP_APPLICATION | $jq '.uris[0]' | sed -e 's/^"//'  -e 's/"$//'`
+  export ROOT_URL="http://$DOMAIN"
+  #echo "ROOT_URL: $ROOT_URL"
+}
+
 export_env_dir $3
+extract_root_url
+
 
 # Enable verbose debugging if configured to -- though this has to come after
 # we've loaded environment configs.
@@ -69,7 +78,7 @@ APP_RELEASE=`cat "$APP_SOURCE_DIR/.meteor/release" | sed -e 's/METEOR@//'`
 # Where we will install meteor. Has to be outside the APP_CHECKOUT_DIR.
 METEOR_DIR="$CACHE_DIR/$APP_RELEASE"
 # Where we'll put things we compile.
-COMPILE_DIR_SUFFIX=".meteor/heroku_build"
+COMPILE_DIR_SUFFIX=".meteor/bluemix_build"
 COMPILE_DIR="$APP_CHECKOUT_DIR"/"$COMPILE_DIR_SUFFIX"
 # Try to minimize meteor's printing, unless we're running verbosely.
 if [ -z "$BUILDPACK_VERBOSE" ]; then
@@ -79,19 +88,6 @@ fi
 # Create directories as needed.
 mkdir -p "$APP_CHECKOUT_DIR" "$METEOR_DIR"
 mkdir -p "$COMPILE_DIR" "$COMPILE_DIR/bin" "$COMPILE_DIR/lib"
-
-# Set a default ROOT_URL if one is not defined. Currently, HEROKU_APP_NAME is
-# only available if you enable the labs addon "Heroku Dyno Metadata":
-# https://devcenter.heroku.com/articles/dyno-metadata
-# This logic is duplicated in extra/root_url.sh so that it repeats on dyno
-# restart.
-if [ -z "$ROOT_URL" ] && [ -n "$HEROKU_APP_NAME" ] ; then
-  export ROOT_URL="https://${HEROKU_APP_NAME}.herokuapp.com"
-fi
-if [ -z "$ROOT_URL" ] ; then
-  echo "FATAL: ROOT_URL is not defined."
-  exit 1
-fi
 
 #
 # Install meteor
@@ -205,14 +201,3 @@ cat > "$APP_CHECKOUT_DIR"/.profile.d/path.sh <<EOF
   export PATH=\$HOME/$COMPILE_DIR_SUFFIX/bin:\$PATH
   export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:\$HOME/$COMPILE_DIR_SUFFIX/lib
 EOF
-
-#
-# Extras
-#
-
-# source scripts in 'extra' dir, if any.  Create them for custom stuff like
-# binary dependencies, additional environment settings, etc.
-echo "-----> Running extras"
-for file in `ls "$BUILDPACK_DIR"/extra | sort`; do
-  . "$BUILDPACK_DIR"/extra/$file
-done
