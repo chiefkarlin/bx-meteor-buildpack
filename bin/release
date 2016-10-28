@@ -16,11 +16,8 @@ extract_mongo_url() {
   #echo "MONGO_URL: $MONGO_URL"
 }
 
-
-
 extract_mongo_url
-extract_root_url
 cat <<EOF
 default_process_types:
-  web: MONGO_URL=$MONGO_URL ROOT_URL=$ROOT_URL .meteor/bluemix_build/bin/node .meteor/bluemix_build/app/main.js
+  web: MONGO_URL=$MONGO_URL .meteor/bluemix_build/bin/node .meteor/bluemix_build/app/main.js
 EOF
