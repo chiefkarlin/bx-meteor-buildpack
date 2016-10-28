@@ -24,10 +24,10 @@ export_env_dir() {
 }
 
 extract_root_url() {
-  #echo "Pulling ROOT_URL from VCAP_APPLICATION"
+  echo "Pulling ROOT_URL from VCAP_APPLICATION"
   DOMAIN=`echo $VCAP_APPLICATION | $jq '.uris[0]' | sed -e 's/^"//'  -e 's/"$//'`
   export ROOT_URL="http://$DOMAIN"
-  #echo "ROOT_URL: $ROOT_URL"
+  echo "ROOT_URL: $ROOT_URL"
 }
 
 export_env_dir $3
