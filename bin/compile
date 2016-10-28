@@ -19,7 +19,7 @@ if [ -n "${BUILDPACK_CLEAR_CACHE+1}" ]; then
   rm -rf "$CACHE_DIR"
 fi
 
-jq=$BUILDPACK_DIR/jq
+jq=$BUILDPACK_DIR/bin/jq
 chmod +x $jq
 
 # Load config vars into environment (from https://devcenter.heroku.com/articles/buildpack-api)
