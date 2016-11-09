@@ -1,5 +1,7 @@
 # Meteor Buildpack for Bluemix
 
+[Deploy to bluemix](https://bluemix.net/deploy)
+
 A Bluemix buildpack for Meteor v1.3+, forked from the [meteor horse buildpack](https://github.com/AdmitHub/meteor-buildpack-horse) 
 
 To use this with your meteor app on Bluemix:
