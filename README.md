@@ -1,6 +1,6 @@
 # Meteor Buildpack for Bluemix
 
-[Deploy to bluemix](https://bluemix.net/deploy)
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy)
 
 A Bluemix buildpack for Meteor v1.3+, forked from the [meteor horse buildpack](https://github.com/AdmitHub/meteor-buildpack-horse) 
 
